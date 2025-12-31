@@ -4,7 +4,7 @@
 enum moonboard_status_e
 {
     MOONBOARD_STATUS_SUCCESS = 0,
-    MOONBOARD_STATUS_LED_FAILURE,
+    MOONBOARD_STATUS_FAILURE_LED,
 };
 
 enum moonboard_status_e moonboard_init(void);
