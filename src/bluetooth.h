@@ -3,10 +3,10 @@
 
 #include <stdbool.h>
 
-void bluetooth_init(void);
-void bluetooth_process(void);
+struct bluetooth_t;
 
-char * bluetooth_get_message(void);
-bool bluetooth_message_received(void);
+struct bluetooth_t * bluetooth_init(void);
+char * bluetooth_get_message(struct bluetooth_t * self);
+bool bluetooth_message_received(struct bluetooth_t * self);
 
 #endif // BLUETOOTH_H
