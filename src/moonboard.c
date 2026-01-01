@@ -123,7 +123,7 @@ static void moonboard_parse_message(char * message)
 
 static void moonboard_led_reset(void)
 {
-        memset(&moonboard[0], 0, sizeof(moonboard));
+    memset(&moonboard[0], 0, sizeof(moonboard));
 }
 
 static void moonboard_led_update(void)
