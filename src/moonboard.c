@@ -79,7 +79,7 @@ void moonboard_process(void)
 
     if (message_received)
     {
-        memset(&moonboard[0], 0, sizeof(moonboard));
+        moonboard_led_reset();
         message = bluetooth_get_message();
         moonboard_parse_message(message);
         moonboard_led_update();
