@@ -55,17 +55,19 @@ static const enum colors_e moonboard_hold_colors[] = {
 
 static enum moonboard_hold_e moonboard[MOONBOARD_LED_COUNT];
 
-static struct bluetooth_t * moonboard_bluetooth;
 static struct led_t * moonboard_led;
 
 static void moonboard_parse_message(char * message);
+static void moonboard_led_reset(void);
 static void moonboard_led_update(void);
 static enum moonboard_hold_e moonboard_hold_from_character(const char * lookup, char c);
 
 enum moonboard_status_e moonboard_init(void)
 {
-    moonboard_bluetooth = bluetooth_init();
+    bluetooth_init();
     moonboard_led = led_init(MOONBOARD_LED_COUNT);
+
+    led_update(moonboard_led);
 
     return MOONBOARD_STATUS_SUCCESS;
 }
@@ -73,11 +75,12 @@ enum moonboard_status_e moonboard_init(void)
 void moonboard_process(void)
 {
     char * message;
-    bool message_received = bluetooth_message_received(moonboard_bluetooth);
+    bool message_received = bluetooth_message_received();
 
     if (message_received)
     {
-        message = bluetooth_get_message(moonboard_bluetooth);
+        memset(&moonboard[0], 0, sizeof(moonboard));
+        message = bluetooth_get_message();
         moonboard_parse_message(message);
         moonboard_led_update();
     }
@@ -116,6 +119,11 @@ static void moonboard_parse_message(char * message)
 
         token = strtok(NULL, delimiter);
     }
+}
+
+static void moonboard_led_reset(void)
+{
+        memset(&moonboard[0], 0, sizeof(moonboard));
 }
 
 static void moonboard_led_update(void)
