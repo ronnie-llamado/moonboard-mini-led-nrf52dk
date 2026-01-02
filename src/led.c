@@ -11,11 +11,11 @@ static const struct device *const strip = DEVICE_DT_GET(STRIP_NODE);
 
 static const struct led_rgb rgb_colors[] = {
     [COLOR_NONE]    = RGB(0x00, 0x00, 0x00),
-    [COLOR_RED]     = RGB(0xFF, 0x00, 0x00),
-    [COLOR_GREEN]   = RGB(0x00, 0xFF, 0x00),
-    [COLOR_BLUE]    = RGB(0x00, 0x00, 0xFF),
-    [COLOR_CYAN]    = RGB(0x00, 0xFF, 0xFF),
-    [COLOR_MAGENTA] = RGB(0xFF, 0x00, 0xFF),
+    [COLOR_RED]     = RGB(0x3F, 0x00, 0x00),
+    [COLOR_GREEN]   = RGB(0x00, 0x3F, 0x00),
+    [COLOR_BLUE]    = RGB(0x00, 0x00, 0x3F),
+    [COLOR_CYAN]    = RGB(0x00, 0x3F, 0x3F),
+    [COLOR_MAGENTA] = RGB(0x3F, 0x00, 0x3F),
 };
 
 struct led_t

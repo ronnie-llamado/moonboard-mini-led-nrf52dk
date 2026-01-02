@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "bluetooth.h"
 #include "colors.h"
 #include "led.h"
 #include "moonboard.h"
@@ -52,36 +53,36 @@ static const enum colors_e moonboard_hold_colors[] = {
     [MOONBOARD_HOLD_FOOT]       = COLOR_MAGENTA,
 };
 
-static bool message_received = false;
-static char message[64];
 static enum moonboard_hold_e moonboard[MOONBOARD_LED_COUNT];
 
 static struct led_t * moonboard_led;
 
 static void moonboard_parse_message(char * message);
+static void moonboard_led_reset(void);
 static void moonboard_led_update(void);
 static enum moonboard_hold_e moonboard_hold_from_character(const char * lookup, char c);
 
 enum moonboard_status_e moonboard_init(void)
 {
-    // TODO: Initialize BLUETOOTH
-
+    bluetooth_init();
     moonboard_led = led_init(MOONBOARD_LED_COUNT);
 
-    // Mock received message
-    strcpy(message,"~M*l#R4,E35,R44,R56,R60,S77,R80,S100#\r\n");
-    message_received = true;
+    led_update(moonboard_led);
 
     return MOONBOARD_STATUS_SUCCESS;
 }
 
 void moonboard_process(void)
 {
+    char * message;
+    bool message_received = bluetooth_message_received();
+
     if (message_received)
     {
+        moonboard_led_reset();
+        message = bluetooth_get_message();
         moonboard_parse_message(message);
         moonboard_led_update();
-        message_received = false;
     }
 }
 
@@ -118,6 +119,11 @@ static void moonboard_parse_message(char * message)
 
         token = strtok(NULL, delimiter);
     }
+}
+
+static void moonboard_led_reset(void)
+{
+    memset(&moonboard[0], 0, sizeof(moonboard));
 }
 
 static void moonboard_led_update(void)
