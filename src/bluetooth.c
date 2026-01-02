@@ -41,6 +41,7 @@ static unsigned int message_length;
 static unsigned int message_position;
 static bool message_received;
 static char pending_message[64];
+static bool disconnected;
 
 static void adv_work_handler(struct k_work *work)
 {
@@ -56,13 +57,15 @@ static void advertising_start(void)
 	k_work_submit(&adv_work);
 }
 
-static void connected(struct bt_conn *conn, uint8_t err)
+static void connected_cb(struct bt_conn *conn, uint8_t err)
 {
+	disconnected = false;
 	current_conn = bt_conn_ref(conn);
 }
 
-static void disconnected(struct bt_conn *conn, uint8_t reason)
+static void disconnected_cb(struct bt_conn *conn, uint8_t reason)
 {
+	disconnected = true;
 	if (current_conn) {
 		bt_conn_unref(current_conn);
 		current_conn = NULL;
@@ -75,8 +78,8 @@ static void recycled_cb(void)
 }
 
 BT_CONN_CB_DEFINE(conn_callbacks) = {
-	.connected        = connected,
-	.disconnected     = disconnected,
+	.connected        = connected_cb,
+	.disconnected     = disconnected_cb,
 	.recycled         = recycled_cb,
 };
 
@@ -155,4 +158,9 @@ bool bluetooth_message_received(void)
     }
 
     return value;
+}
+
+bool bluetooth_disconnected(void)
+{
+	return disconnected;
 }

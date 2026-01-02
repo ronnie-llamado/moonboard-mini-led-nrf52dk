@@ -76,12 +76,18 @@ void moonboard_process(void)
 {
     char * message;
     bool message_received = bluetooth_message_received();
+    bool disconnected = bluetooth_disconnected();
 
     if (message_received)
     {
         moonboard_led_reset();
         message = bluetooth_get_message();
         moonboard_parse_message(message);
+        moonboard_led_update();
+    }
+    else if (disconnected)
+    {
+        moonboard_led_reset();
         moonboard_led_update();
     }
 }
